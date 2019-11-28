@@ -6,6 +6,6 @@ const userSchema = new Schema({
   name: String
 });
 
-// creates user collection / collection using the defined userSchema
+// creates user collection using the defined userSchema
 const User = mongoose.model("user", userSchema);
 module.exports = User;
