@@ -3,7 +3,8 @@ const Schema = mongoose.Schema;
 
 // blue print of data / collection
 const userSchema = new Schema({
-  name: String
+  name: String,
+  postCount: Number
 });
 
 // creates user collection using the defined userSchema
