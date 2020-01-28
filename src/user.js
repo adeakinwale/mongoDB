@@ -2,8 +2,7 @@ const mongoose = require("mongoose");
 const PostSchema = require("./post");
 const Schema = mongoose.Schema;
 
-// blue print of data / collection
-const userSchema = new Schema({
+const UserSchema = new Schema({
   name: {
     type: String,
     validate: {
@@ -12,15 +11,27 @@ const userSchema = new Schema({
     },
     required: [true, "Name is required."]
   },
-
   posts: [PostSchema],
-  likes: Number
+  likes: Number,
+  blogPosts: [
+    {
+      type: Schema.Types.ObjectId,
+      ref: "blogPost"
+    }
+  ]
 });
 
-userSchema.virtual("postCount").get(function() {
+UserSchema.virtual("postCount").get(function() {
   return this.posts.length;
 });
 
-// creates user collection using the defined userSchema
-const User = mongoose.model("user", userSchema);
+UserSchema.pre("remove", function(next) {
+  const BlogPost = mongoose.model("blogPost");
+  // this === joe
+  // blogPost.remove() is deprecated
+  BlogPost.deleteMany({ _id: { $in: this.blogPosts } }).then(() => next());
+});
+
+const User = mongoose.model("user", UserSchema);
+
 module.exports = User;
